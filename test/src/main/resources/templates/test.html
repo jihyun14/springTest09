@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스프링 빌리지에 오신 것을 환영합니다!</title>
+    <!-- 최신 트렌드인 Tailwind CSS를 CDN으로 불러와서 세련된 UI를 구성합니다. -->
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link href="[https://fonts.googleapis.com/css2?family=Jua&display=swap](https://fonts.googleapis.com/css2?family=Jua&display=swap)" rel="stylesheet">
+    <style>
+        /* 커스텀 폰트를 적용합니다. */
+        body {
+            font-family: 'Jua', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-yellow-50 flex items-center justify-center h-screen">
+
+    <!-- 환영 메시지를 담을 카드 UI -->
+    <div class="bg-white p-10 md:p-16 rounded-2xl shadow-lg text-center max-w-md mx-auto transform hover:scale-105 transition-transform duration-300">
+        
+        <!-- 스프링 빌리지를 상징하는 아이콘 -->
+        <div class="text-6xl mb-6 text-green-500">
+            🏡
+        </div>
+
+        <!-- 메인 환영 메시지 -->
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">
+            어서오세요!
+        </h1>
+
+        <!-- 부가 설명 -->
+        <p class="text-lg text-gray-600">
+            여기는 캐릭터와 함께 배우는 <span class="font-bold text-green-600">스프링 빌리지</span>입니다.
+        </p>
+        
+        <!-- 급하냥의 한마디 -->
+        <div class="mt-8 bg-gray-100 p-4 rounded-lg">
+            <p class="text-sm text-gray-700">
+                <span class="font-bold text-orange-600">급하냥</span>: "`/hello` 요청 확인! 신속하게 안내판을 준비했지. 😼"
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>

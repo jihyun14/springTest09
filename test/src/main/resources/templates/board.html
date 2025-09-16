@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스프링 빌리지 - 게시판 목록</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Jua', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10 p-8 bg-white max-w-4xl rounded-lg shadow-md">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800">🏡 주민 게시판</h1>
+		
+				<!-- sec:authorize="isAnonymous()" : 로그인하지 않은 사용자에게만 보이는 영역 -->
+				<div sec:authorize="isAnonymous()">
+				    <a href="/user/login" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300">로그인</a>
+				    <a href="/user/signup" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300">회원가입</a>
+				</div>
+				<!-- sec:authorize="isAuthenticated()" : 로그인한 사용자에게만 보이는 영역 -->
+				<div sec:authorize="isAuthenticated()">
+				    <!-- sec:authentication="name" : 현재 로그인한 사용자의 이름을 표시 -->
+				    <span class="font-bold text-green-700" sec:authentication="name"></span>님 환영합니다!
+				    <a href="/create" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ml-4">새 글 쓰기</a>
+				    <a href="/user/logout" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ml-2">로그아웃</a>
+				</div>
+			</div>
+			<!--get 검색할때 쓰임-->
+			<!-- 검색창 -->
+			<div class="my-4 flex justify-end">
+			    <form th:action="@{/show}" method="get" id="searchForm" class="flex space-x-2">
+			        <input type="text" name="kw" id="search_kw" class="border rounded-lg px-2 py-1" th:value="${kw}">
+			        <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded-lg">찾기</button>
+			    </form>
+			</div>
+
+		<!-- 게시글 목록 -->
+		<div class="space-y-4">
+		    <!-- th:each를 사용해 모델에 담긴 posts를 하나씩 꺼내 반복합니다. th:타임리프, each걍 for문이라 생각, 인스턴스가 2개이상일때 반복의미-->
+			<!--//타임리프(Thymeleaf)는 HTML, XML, XHTML을 처리하는 서버 사이드 템플릿 엔진입니다.
+			//웹 애플리케이션의 화면을 구성하는 데 주로 사용되며, 특히 스프링(Spring) 프레임워크와 함께 많이 쓰입니다.-->
+		    <div th:each="post : ${paging.content}" class="p-6 border rounded-lg hover:shadow-lg transition-shadow duration-300 bg-white">
+		        <a th:href="@{|/show/${post.id}|}">
+				<h2 class="text-2xl font-bold text-green-700" th:text="${post.title}">게시글 제목</h2>
+				</a>
+		        <p class="text-gray-600 mt-2" th:text="${post.content}">게시글 내용입니다. 여러 줄이 들어갈 수 있습니다...</p>
+			        <div class="text-right text-sm text-gray-400 mt-4">
+			            <span th:text="${#temporals.format(post.createAt, 'yyyy-MM-dd HH:mm')}">2025-08-04 10:30</span>
+			        </div>
+		    </div>  
+		    <!-- 게시글이 없을 때 보여줄 메시지 
+		    <div th:if="${posts.isEmpty()}" class="text-center py-10 px-6 border rounded-lg bg-gray-50">
+		        <p class="text-gray-500">아직 등록된 게시글이 없어요.</p>
+		        <p class="text-gray-500">첫 번째 소식을 전해주세요!</p>
+		        <div class="mt-6 bg-purple-50 p-4 rounded-lg text-sm">
+		             <p><span class="font-bold text-purple-600">카피바라</span>: "제 데이터 창고가 아직 텅 비어있어요... 🦦" </p>
+		        </div>
+		    </div>-->
+		</div>
+		<div th:if="${paging.isEmpty()}" class="text-center py-10 px-6 border rounded-lg bg-gray-50">
+		    <p class="text-gray-500">조회된 게시글이 없어요.</p>
+		</div>
+		
+		<!--페이징 처리 시작-->
+		<div th:if="${!paging.isEmpty()}" class="mt-8 flex justify-center">
+		    <nav aria-label="Page navigation">
+		        <ul class="inline-flex items-center -space-x-px">
+		            <!-- 이전 페이지 // kw=${kw}=> 키워드 검색하는 부분-->
+		            <li>
+		                <a th:href="@{|?page=${paging.number-1}&kw=${kw}|}" th:classappend="${paging.first} ? 'pointer-events-none text-gray-400' : ''"
+		                   class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
+		                    이전
+		                </a>
+		            </li>
+		            <!-- 페이지 번호 
+					// {page >= paging.number-2 and page <= paging.number+2 현재 페이지를 기준으로 양쪽에 페이지 넘길 수 있는 버튼 생성 -->
+		            <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
+		                th:if="${page >= paging.number-2 and page <= paging.number+2}">
+		                <a th:href="@{|?page=${page}&kw=${kw}|}" th:text="${page+1}"
+		                   th:classappend="${page == paging.number} ? 'bg-green-500 text-white' : 'text-gray-500 bg-white'"
+		                   class="px-3 py-2 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700"></a>
+		            </li>
+		            <!-- 다음 페이지 -->
+		            <li>
+		                <a th:href="@{|?page=${paging.number+1}&kw=${kw}|}" th:classappend="${paging.last} ? 'pointer-events-none text-gray-400' : ''"
+		                   class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
+		                    다음
+		                </a>
+		            </li>
+		        </ul>
+		    </nav>
+		</div>
+		
+            </div>
+        </div>
+    </div>
+</body>
+</html>

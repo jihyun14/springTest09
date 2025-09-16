@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>우리 팀의 Thymeleaf 프로젝트</title>
+  </head>
+  <body>
+    <!---- 타임리프 문법 정리
+
+th:text : 컨트롤러에서 받아온 객체의 멤버변수값을 출력(텍스트로)
+th:utext: html 태그 해석 출력(보안에는 주의해야함.) 사용방식은 th:text와 동일
+th:value: 입력 필드값 설정. (입력 필드의 기본값)
+
+th:src : 이미지 등 미디어 파일 경로 설정
+th:href : URL(경로) 설정 시 사용
+
+타임리프의 표현식 5가지
+1. ${...} : 변수표현식(타임리프 문법의 변수 선언)
+ -> 컨트롤러에서 넘어온 모든 데이터에 접근이  가능.
+2. *{...} : 선택변수 표현식. (전제 조건: 객체 내부에서 사용할 것)
+  <p th:text="${user.name}">이름</p>
+      <p th:text="${user.age}">나이</p>
+      <p th:text="${user.email}">이메일</p>
+   
+      위, 아래 코드는 동일한 결과를 출력.
+      <div th:object="${user}">
+          <p th:text="*{name}">이름</p>  <${user.name}과 동일 
+          <p th:text="*{age}">나이</p>    ${user.age}와 동일 
+          <p th:text="*{email}">이메일</p>  ${user.email}과 동일 
+      </div>
+
+3. #{...} : 메세지 표현식
+#: 날짜를 표현할 떄도 자주사용.
+4. @{...} : 링크표현식 
+
+
+-->
+
+    <p th:text="${message}"></p>
+    <p th:text="${객체명.변수명}"></p>
+
+    <!--th:value: 입력 필드값 설정. (입력 필드의 기본값) 예시-->
+    <input type="text" th:value="${user.name}" name="username" />
+    <textarea th:value="${post.content}" name="content"></textarea>
+
+    <!--리소스 경로 설정// th:src/ th:href 예시,@{...} : 링크표현식 예시-->
+    <img th:src="@{/images/profile/${user.profileImage}}" alt="프로필 이미지" />
+    <a th:href="@{/users/{id}/profile(id=${user.id})}">프로필 보기</a>
+
+    <!--3.#{...} : 메세지 표현식
+#: 날짜를 표현할 떄도 자주사용. 
+-->
+    <p th:text="#{w.msg}">메세지</p>
+
+    <!-- 
+@{...} : 링크표현식
+위의 프로필보기 참조
+ -->
+    <!---
+표현식도 표현식이지만 중요한건 제어문
+if, unless, switch-case, each, with, block,
+
+
+
+
+--->
+
+    타임리프 if 예시
+    <div th:if="${user.role=='admin'}">
+      <a th:href="@{/admin/dashboard}">관리자 대시보드</a>
+    </div>
+
+    <div th:unless="${user !=null}">
+      <a th:href="@{/login}">로그인</a>
+    </div>
+
+    switch-case 예시
+    <div th:switch="${user.membershipLevel}">
+      <p th:case="'BRONZE'">브론즈 회원입니다</p>
+      <p th:case="'SILVER'">실버 회원입니다</p>
+      <p th:case="'GOLD'">골드 회원입니다</p>
+      <p th:case="'PLATINUM'">플래티넘 회원입니다</p>
+      <p th:case="*">일반 회원입니다</p>
+    </div>
+
+    each 예시 each : 향상된 for문 쓴다 생각하고 접근 
+    -> 컨트롤러에서 리턴된 리스트들을 변환할 때 사용.
+    <tr th:each="user:${userList}">
+      <td th:text="${user.id}"></td>
+    </tr>
+
+
+    each + if 활용사례
+    -> each의 경우는 2개의 임시변수들이 올 때도 있음
+        2번째는 반복의 상태를 나타내는 변수값
+    -> userStat : 반복상태 제공 객체
+       userStat.count : 현재 반복의 순번
+        userStat.first : 현재 항목이 첫 번째 반복인지 여부
+        userStat.last : 현재 항목이 마지막 반복인지 여부
+        userStat.even : 현재 항목이 짝수 행인지 여부
+        userStat.odd : 현재 항목이 홀수 행인지 여부
+
+     <tr th:each="user, userStat : ${userList}">
+        <td th:text="${userStat.count}">순번</td>
+        <td th:text="${user.name}">이름</td>
+        <td>
+            <span th:if="${userStat.first}" style="color: blue;">첫 번째</span>
+            <span th:if="${userStat.last}" style="color: red;">마지막</span>
+            <span th:if="${userStat.even}" style="color: green;">짝수 행</span>
+            <span th:if="${userStat.odd}" style="color: orange;">홀수 행</span>
+        </td>
+    </tr>
+
+
+
+  </body>
+</html>

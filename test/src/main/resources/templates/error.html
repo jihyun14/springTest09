@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="[http://www.thymeleaf.org](http://www.thymeleaf.org)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스프링 빌리지 - 문제 발생!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Jua', sans-serif; }
+    </style>
+</head>
+<body class="bg-red-50 flex items-center justify-center h-screen">
+
+    <div class="bg-white p-10 md:p-16 rounded-2xl shadow-lg text-center max-w-lg mx-auto">
+        
+        <!-- 잔망루피 아이콘 -->
+        <div class="text-6xl mb-6">
+            <span class="animate-bounce inline-block">❗</span>
+            <span>🤔 </span>
+            <span class="animate-bounce inline-block">❓</span>
+        </div>
+
+        <h1 class="text-4xl font-bold text-red-600 mb-4">
+            이게 맞아?
+        </h1>
+
+        <p class="text-lg text-gray-700 mb-6">
+            요청을 처리하는 중 문제가 발생했어요.
+        </p>
+        
+        <!-- 서버에서 전달된 에러 메시지 표시 -->
+        <div class="bg-gray-100 p-4 rounded-lg text-left">
+            <p class="text-sm text-gray-600 font-mono" th:text="${errorMessage}">
+                서버에서 전달된 에러 메시지가 여기에 표시됩니다.
+            </p>
+        </div>
+
+        <div class="mt-8">
+            <a href="/show" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                게시판으로 돌아가기
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>스프링 빌리지 - 새 글 쓰기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jua&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Jua", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <div
+      class="container mx-auto mt-10 p-8 bg-white max-w-2xl rounded-lg shadow-md"
+    >
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800">
+          🏡 주민 게시판 새 글 쓰기
+        </h1>
+        <p class="text-gray-500 mt-2">마을의 새로운 소식을 전해주세요!</p>
+      </div>
+
+      <!-- action 속성의 주소로 form 데이터가 POST 방식으로 전송됩니다. -->
+      <form th:action="@{/create}" method="post" th:object="${dto}" enctype="multipart/form-data">
+		<div th:if="${#fields.hasGlobalErrors()}" class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 			rounded">
+		    <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+		</div>
+		
+        <div class="mb-6">
+          <labelfor="title" class="block text-lg font-medium text-gray-700 mb-2" >제목</label>
+          <input type="text" id="title" th:field ="*{title}"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+            placeholder="제목을 입력하세요" required/>
+		<div class = "text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('content')}" th:errors = "*{content}"></div>
+        </div>
+		<div class = "text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('title')}"th:errors="*{title}"></div>
+		
+        <div class="mb-6">
+          <label for="content"class="block text-lg font-medium text-gray-700 mb-2">내용</label>
+          <textarea id="content" th:field ="*{content}"rows="10"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+            placeholder="내용을 입력하세요"required></textarea>
+		  <div class = "text-red-500 text-sm mt-1" th:if="${#fields.hasErrors('content')}"th:errors="*{content}"></div>
+        </div>
+		<!--첨부파일-->
+		<div class="mb-6">
+		    <label for="file" class="block text-lg font-medium text-gray-700 mb-2">파일 첨부</label>
+		    <input type="file" id="file" name="file" class="w-full text-sm text-gray-500
+		      file:mr-4 file:py-2 file:px-4
+		      file:rounded-full file:border-0
+		      file:text-sm file:font-semibold
+		      file:bg-green-50 file:text-green-700
+		      hover:file:bg-green-10"/>
+		</div>
+	
+        <div class="text-right">
+          <button type="submit"
+            class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300"
+          > 글 등록하기
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-8 bg-blue-50 p-4 rounded-lg text-sm text-center">
+        <p>
+          <span class="font-bold text-blue-600">와플곰</span>: "어떤 맛있는 이야기가 올라올까 기대되네요! 🐻"
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
+
